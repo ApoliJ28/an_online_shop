@@ -11,11 +11,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="#">Home</a>
+                    <a class="nav-link text-light" href="{{ url_for('home') }}">Home</a>
                 </li>
                 {% if logged_in %}
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="#" aria-disabled="true">{{name_}}</a>
+                    <a class="nav-link text-light" href="#" aria-disabled="true">{{name}}</a>
                 </li>
                 {% endif %}
             </ul>
@@ -33,9 +33,13 @@
             <div class="ms-3">
                 <button class="btn btn-outline-light position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
                     <i class="bi bi-cart-fill"></i> 
+                    {% if n_items %}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3 <!-- Este número es la cantidad de artículos en el carrito -->
+                        
+                        {{n_items}} <!-- Este número es la cantidad de artículos en el carrito -->
+                        
                     </span>
+                    {% endif %}
                 </button>
             </div>
             {% endif %}
@@ -43,7 +47,6 @@
     </div>
 </nav>
 
-<!-- Modal del carrito de compras -->
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -52,34 +55,46 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Productos en el carrito -->
-                <div class="cart-item d-flex align-items-center mb-3">
-                    <img src="https://fakestoreapi.com/img/81fPKd0s+QL._AC_SL1500_.jpg" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px;">
-                    <div class="w-100">
-                        <h6>Product 1</h6>
-                        <p class="text-muted">Short description of Product 1</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>$10.00</span>
-                            <div class="input-group" style="width: 120px;">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon1">-</button>
-                                <input type="text" class="form-control text-center" value="1" aria-label="Quantity" aria-describedby="button-addon1">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2">+</button>
+                {% if items_carts %}
+                    {% for item in items_carts %}
+                    <!-- Productos en el carrito -->
+                    <div class="cart-item d-flex align-items-center mb-3" data-product-id="{{item.id}}">
+                        <img src="{{item.img_url}}" alt="Product Image {{item.name_product}}" class="img-thumbnail me-3" style="width: 80px; height: 80px;">
+                        <div class="w-100">
+                            <h6>{{item.name_product}}</h6>
+                            <p class="text-muted">{{item.description_product}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${{item.price_product}}</span>
+                                <div class="input-group" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary decrement" type="button">-</button>
+                                    <input type="text" class="form-control text-center quantity" value="{{item.quantity}}" aria-label="Quantity">
+                                    <button class="btn btn-outline-secondary increment" type="button">+</button>
+                                </div>
+                            </div>
+                            <!-- Botón para eliminar el producto -->
+                            <div class="mt-2">
+                                <button class="btn btn-danger delete-item" data-product-id="{{item.id}}">Remove</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Repite el bloque anterior para cada producto en el carrito -->
-
+                    {% endfor %}
+                {% else %}
+                <h6>There are no products in the cart</h6>
+                {% endif %}
                 <hr>
                 <div class="d-flex justify-content-between">
                     <strong>Total:</strong>
-                    <strong>$50.00</strong> <!-- Total calculado -->
+                    <strong id="cartTotal">${{total_cart}}</strong>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Go to Pay</button>
+                <a type="button" class="btn btn-primary" id="checkoutButton" href="{{ url_for('create_checkout_session') }}">Go to Pay</a>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>

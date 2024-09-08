@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="text-center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="flash">{{ message }}
+                <p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <!-- Sección Hero con imagen de fondo -->
 <div class="hero-section">
     <div class="overlay"></div>
@@ -22,7 +32,7 @@
                     <p class="card-text">{{product.description}}</p>
                     <p class="card-text"><strong>${{product.price}}</strong></p>
                     {% if logged_in %}
-                    <a href="#" class="btn btn-primary">Añadir al carrito {{product.id}}</a>
+                    <a href="{{ url_for('add_item_cart', id_product=product.id) }}" class="btn btn-primary">Añadir al carrito</a>
                     {% else %}
                     <a href="{{ url_for('login') }}" class="btn btn-primary">Añadir al carrito</a>
                     {% endif %}

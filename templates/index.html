@@ -15,13 +15,13 @@
 <div class="hero-section">
     <div class="overlay"></div>
     <div class="container h-100 d-flex justify-content-center align-items-center">
-        <h1 class="text-light display-4">¡Bienvenido a Nuestra Tienda Online!</h1>
+        <h1 class="text-light display-4">¡Welcome to Our Online Store!</h1>
     </div>
 </div>
 
 <!-- Sección de productos -->
 <div class="container marketing py-5">
-    <h2 class="text-center mb-5">Nuestros Productos</h2>
+    <h2 class="text-center mb-5">Our Products</h2>
     <div class="row">
         {% for product in products %}
         <div class="col-lg-4 py-3">
@@ -32,9 +32,9 @@
                     <p class="card-text">{{product.description}}</p>
                     <p class="card-text"><strong>${{product.price}}</strong></p>
                     {% if logged_in %}
-                    <a href="{{ url_for('add_item_cart', id_product=product.id) }}" class="btn btn-primary">Añadir al carrito</a>
+                    <a href="{{ url_for('add_item_cart', id_product=product.id) }}" class="btn btn-primary">Add to cart</a>
                     {% else %}
-                    <a href="{{ url_for('login') }}" class="btn btn-primary">Añadir al carrito</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">Add to cart</a>
                     {% endif %}
                 </div>
             </div>
